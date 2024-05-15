@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: application/docker/api/Dockerfile
+    command: python app.py
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/code
