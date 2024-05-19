@@ -8,11 +8,11 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
     DB_NAME: str
-    # DB_URL: str
 
     WEB_HOST: str
     WEB_PORT: int
     WEB_ALLOW_ORIGINS: str
+    WEB_ALLOW_HOSTS: str
     WEB_DEBUG: bool
     WEB_RELOAD: bool
     WEB_SECRET_KEY: str
@@ -21,7 +21,11 @@ class Settings(BaseSettings):
     def DATABASE_URL_ASYNCPG(self) -> str:
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
-    model_config = SettingsConfigDict(env_file='./docker/env/dev/.env')
+    # с локальной машины
+    # model_config = SettingsConfigDict(env_file='./docker/env/dev/.env')
+
+    # docker
+    model_config = SettingsConfigDict(env_file='./docker/env/prod/.env.web')
 
 
 settings = Settings()

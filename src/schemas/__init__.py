@@ -1,3 +1,4 @@
 
 
-from .capital_cities import GetCapital, UpdateCapital, CreateCapital, DeleteCapital, CapitalGeoJSON, CapitalsGeoJSON
+from .capital_cities import (Base, Update, Create, Delete, GetGeoJSONFeature, GetGeoJSONFeatureCollection)
+

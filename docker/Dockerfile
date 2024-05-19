@@ -1,14 +1,17 @@
-FROM python:3.8
+FROM python:3.10-slim
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
-ENV TZ=Etc/UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+WORKDIR /app
 
-WORKDIR /code
-RUN apt update
-RUN apt install -y --assume-yes python3-dev libpq-dev build-essential python3-pip
+# Обновление pip python
+RUN pip install --upgrade pip
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+# Установка пакетов для проекта
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копирование проекта
+COPY . .

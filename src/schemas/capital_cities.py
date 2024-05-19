@@ -1,42 +1,32 @@
-from datetime import datetime
-from typing import Optional
-
-from geojson_pydantic import Feature, FeatureCollection
+from geojson_pydantic import Feature, FeatureCollection, Point
 from pydantic import BaseModel
 
 
-class BaseCapital(BaseModel):
+class Base(BaseModel):
     country: str
     city: str
-    geom: dict
+    geom: FeatureCollection
 
 
-class GetCapital(BaseCapital):
-    id: int
-    created_date: datetime
-    updated_date: datetime
-
-    class Config:
-        from_attributes = True
-
-
-class CreateCapital(BaseCapital):
+class Create(Base):
     ...
 
 
-class UpdateCapital(BaseCapital):
+class Update(Base):
     ...
 
 
-class DeleteCapital(BaseCapital):
+class Delete(Base):
     ...
 
 
-class CapitalGeoJSON(Feature):
-    properties: Optional[GetCapital] = None
+class GetGeoJSONFeature(Feature):
+    geometry: Point
+    properties: dict
 
 
-class CapitalsGeoJSON(FeatureCollection):
-    features: list[CapitalGeoJSON]
+class GetGeoJSONFeatureCollection(FeatureCollection):
+    features: list[GetGeoJSONFeature]
+
 
 
