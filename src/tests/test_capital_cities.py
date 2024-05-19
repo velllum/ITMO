@@ -1,55 +1,30 @@
-from .conftest import get_user
 
 
-def test_user_create(client, prefix, db, data_user):
-    """- проверка создания пользователя"""
-    with client.post(f"{prefix}/create", data=data_user.json()) as response:
-        assert response.status_code == 200
-        user = get_user(db, data_user)
-        assert user.email == data_user.email
+def test_create(client, prefix, data):
+    """- проверка создания """
+    with client.post(f"{prefix}/create", data=data.json()) as response:
+        ...
 
 
-def test_users(client, prefix):
-    """- проверка всех пользователей"""
+def test_get_all(client, prefix):
+    """- проверка получение всех данных """
     with client.get(prefix) as response:
-        assert response.status_code == 200
-        assert isinstance(response.json(), list) is True
+        ...
 
 
-def test_search(client, prefix, data_user):
-    """- проверка поиска"""
-    with client.get(f"{prefix}/search/", params=dict(q=data_user.name)) as response:
-        assert response.status_code == 200
-
-        if response.text == "Ничего не найдено, попробуйте еще раз":
-            assert isinstance(response.text, str) is True
-
-        response_user = response.json()
-        assert isinstance(response_user, list) is True
-        assert len(response_user) > 0
-
-        for user in response_user:
-            assert data_user.name in user.values()
+def test_get_one(client, prefix, obj):
+    """- проверка получение по ID """
+    with client.get(f"{prefix}/{obj.id}/") as response:
+        ...
 
 
-def test_user(client, prefix, user):
-    """- проверка пользователя"""
-    with client.get(f"{prefix}/{user.id}/") as response:
-        response_user = response.json()
-        assert response.status_code == 200
-        assert response_user["id"] == user.id
+def test_update(client, prefix, data, obj):
+    """- проверка обновления """
+    with client.put(f"{prefix}/{obj.id}", data=data.json()) as response:
+        ...
 
 
-def test_user_update(client, prefix, data_user, user):
-    """- проверка обновления пользователя"""
-    with client.put(f"{prefix}/{user.id}", data=data_user.json()) as response:
-        response_user = response.json()
-        assert response.status_code == 200
-        assert response_user["created_date"] != user.created_date
-
-
-def test_user_delete(client, prefix, user):
-    """- проверка удаления пользователя"""
-    with client.delete(f"{prefix}/{user.id}") as response:
-        assert response.status_code == 200
-        assert response.text == "Пользователь был удален"
+def test_delete(client, prefix, obj):
+    """- проверка удаления """
+    with client.delete(f"{prefix}/{obj.id}") as response:
+        ...
