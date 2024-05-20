@@ -3,8 +3,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from sqlalchemy import delete
-from starlette.middleware.cors import CORSMiddleware
-from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from src import routers
 from src.core import settings
@@ -18,8 +16,11 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """- События продолжительности жизни """
     await start_database()
-    await clear_test_data_table()
-    await add_test_data_table()
+    # await clear_test_data_table()
+    try:
+        await add_test_data_table()
+    except:
+        pass
     await register_routers(app)
 
     yield

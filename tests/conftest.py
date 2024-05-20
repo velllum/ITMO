@@ -1,22 +1,20 @@
+from typing import AsyncGenerator, Any
+
 import pytest
 from fastapi import FastAPI
+from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.testclient import TestClient
 
 from src import routers as router, schemas as schema, create_app, settings
-from src.core.database import get_async_db
+from src.core.database import db_manager
 
 
-# @pytest_asyncio.fixture
-# def client() -> AsyncGenerator[AsyncClient, Any]:
-#     with AsyncClient() as c:
-#         yield c
-
-
+# @pytest.fixture
 @pytest.fixture
 def app() -> FastAPI:
-    """- получить объект приложения"""
-    yield create_app()
+    """- получить объект приложения """
+    return create_app()
 
 
 def pytest_configure(config):
@@ -25,7 +23,7 @@ def pytest_configure(config):
 
 
 @pytest.fixture
-def client(app: FastAPI) -> TestClient:
+def client(app) -> TestClient:
     """- получить клиента """
     headers = {"Content-Type": "application/json"}
     base_url = f'http://{settings.WEB_HOST}:{settings.WEB_PORT}'
@@ -35,50 +33,57 @@ def client(app: FastAPI) -> TestClient:
 
 @pytest.fixture
 def prefix() -> str:
-    """- получить префикс ссылки"""
-    yield f"{router.API_PREFIX}/capital-cities"
+    """- получить префикс ссылки """
+    return f"{router.API_PREFIX}/capital-cities"
+
+
+# @pytest.fixture
+# async def sessionmanager():
+#     """- инициализация менеджера сессии запроса к базе """
+#     db_manager.init(settings.DATABASE_URL_ASYNCPG)
+#     yield db_manager
+#     await db_manager.close()
+#
+#
+# @pytest.fixture
+# async def db(sessionmanager) -> AsyncSession:
+#     """- получить префикс ссылки """
+#     async with db_manager.session() as session:
+#         yield session
+#
+#
+# @pytest.fixture
+# async def dct_data() -> dict:
+#     """- словарь с данными """
+#     return {
+#         "country": "Казахстан",
+#         "city": "Астана",
+#         "geom": {
+#             "type": "FeatureCollection",
+#             "features": [
+#                 {
+#                     "type": "Feature",
+#                     "properties": {},
+#                     "geometry": {
+#                         "coordinates": [
+#                             71.43075337936759,
+#                             51.128427723406304
+#                         ],
+#                         "type": "Point"
+#                     }
+#                 }
+#             ]
+#         }
+#     }
+#
+#
+# @pytest.fixture
+# async def schema_create(dct_data: dict) -> schema.Create:
+#     return schema.Create(**dct_data)
 
 
 @pytest.fixture
-async def db() -> AsyncSession:
-    """- получить префикс ссылки"""
-    db = await get_async_db().run_sync()
-    if db:
-        yield db
-    db.close()
-
-
-@pytest.fixture
-def dct_data() -> dict:
-    """- словарь с данными """
-    return {
-        "country": "Казахстан",
-        "city": "Астана",
-        "geom": {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                    "type": "Feature",
-                    "properties": {},
-                    "geometry": {
-                        "coordinates": [
-                            71.43075337936759,
-                            51.128427723406304
-                        ],
-                        "type": "Point"
-                    }
-                }
-            ]
-        }
-    }
-
-
-@pytest.fixture
-def schema_create(dct_data: dict) -> schema.Create:
-    return schema.Create(**dct_data)
-
-
-@pytest.fixture
-def schema_update(dct_data: dict) -> schema.Update:
+async def schema_update(dct_data: dict) -> schema.Update:
     return schema.Update(**dct_data)
+
 
