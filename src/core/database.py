@@ -3,9 +3,8 @@ import contextlib
 
 from typing import AsyncIterator, Optional
 
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext import asyncio
-
+from sqlalchemy.orm import declarative_base
 
 logger = logging.getLogger(__name__)
 
