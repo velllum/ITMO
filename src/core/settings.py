@@ -19,7 +19,13 @@ class Settings(BaseSettings):
 
     @property
     def DATABASE_URL_ASYNCPG(self) -> str:
+        """- асинхронный драйвер """
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+
+    @property
+    def DATABASE_URL_PSYCOPG(self):
+        """- синхронный драйвер """
+        return f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     # с локальной машины
     model_config = SettingsConfigDict(env_file='./docker/env/dev/.env')

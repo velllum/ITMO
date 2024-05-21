@@ -5,15 +5,14 @@ from pydantic import BaseModel
 class Base(BaseModel):
     country: str
     city: str
-    geom: FeatureCollection
 
 
 class Create(Base):
-    ...
+    geom: FeatureCollection
 
 
 class Update(Base):
-    ...
+    geom: FeatureCollection
 
 
 class Delete(Base):

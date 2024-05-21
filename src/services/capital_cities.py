@@ -48,9 +48,8 @@ class CapitalCityService:
         instance.country = data.country
         instance.city = data.city
         instance.geom = await self._get_shape(data)
-        await self.db.commit()
-        await self.db.refresh(instance)
 
+        instance = await self._valid_and_commit_data(instance)
         feature = await self._get_geojson_feature(instance)
         return schema.GetGeoJSONFeatureCollection(type="FeatureCollection", features=[feature])
 

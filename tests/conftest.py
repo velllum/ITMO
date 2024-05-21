@@ -1,16 +1,15 @@
-from typing import AsyncGenerator, Any
+import copy
 
 import pytest
 from fastapi import FastAPI
-from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from starlette.testclient import TestClient
 
 from src import routers as router, schemas as schema, create_app, settings
-from src.core.database import db_manager
+from src.models import CapitalCity
+from . import database
 
 
-# @pytest.fixture
 @pytest.fixture
 def app() -> FastAPI:
     """- получить объект приложения """
@@ -37,53 +36,76 @@ def prefix() -> str:
     return f"{router.API_PREFIX}/capital-cities"
 
 
-# @pytest.fixture
-# async def sessionmanager():
-#     """- инициализация менеджера сессии запроса к базе """
-#     db_manager.init(settings.DATABASE_URL_ASYNCPG)
-#     yield db_manager
-#     await db_manager.close()
-#
-#
-# @pytest.fixture
-# async def db(sessionmanager) -> AsyncSession:
-#     """- получить префикс ссылки """
-#     async with db_manager.session() as session:
-#         yield session
-#
-#
-# @pytest.fixture
-# async def dct_data() -> dict:
-#     """- словарь с данными """
-#     return {
-#         "country": "Казахстан",
-#         "city": "Астана",
-#         "geom": {
-#             "type": "FeatureCollection",
-#             "features": [
-#                 {
-#                     "type": "Feature",
-#                     "properties": {},
-#                     "geometry": {
-#                         "coordinates": [
-#                             71.43075337936759,
-#                             51.128427723406304
-#                         ],
-#                         "type": "Point"
-#                     }
-#                 }
-#             ]
-#         }
-#     }
-#
-#
-# @pytest.fixture
-# async def schema_create(dct_data: dict) -> schema.Create:
-#     return schema.Create(**dct_data)
+@pytest.fixture
+def db():
+    """- получить синхронную сессию подключения к БД """
+    session = database.get_session()
+    yield session
+    session.close()
 
 
 @pytest.fixture
-async def schema_update(dct_data: dict) -> schema.Update:
-    return schema.Update(**dct_data)
+def dct_create_data() -> dict:
+    """- словарь с данными создания """
+    return {
+        "country": "Казахстан",
+        "city": "Астана",
+        "geom": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "coordinates": [
+                            71.43075337936759,
+                            51.128427723406304
+                        ],
+                        "type": "Point"
+                    }
+                }
+            ]
+        }
+    }
+
+
+@pytest.fixture
+def dct_update_data(dct_create_data) -> dict:
+    """- словарь с данными обновления """
+    dct = copy.deepcopy(dct_create_data)
+    dct['country'] = 'Литва'
+    dct['city'] = 'Вильнюс'
+    dct['geom']['features'][0]['geometry']['coordinates'] = [25.28303715486942, 54.686961697152384]
+    return dct
+
+
+@pytest.fixture
+def schema_create(dct_create_data: dict) -> schema.Create:
+    return schema.Create(**dct_create_data)
+
+
+@pytest.fixture
+def schema_update(dct_update_data: dict) -> schema.Update:
+    return schema.Update(**dct_update_data)
+
+
+@pytest.fixture
+def instance_create(db, schema_create) -> CapitalCity:
+    """- получить объект по полям страны и город, после сохранения """
+    db_execute = db.execute(select(CapitalCity).where(
+        CapitalCity.city == schema_create.city,
+        CapitalCity.country == schema_create.country
+    ))
+    return db_execute.scalars().first()
+
+
+@pytest.fixture
+def instance_update(db, schema_update) -> CapitalCity:
+    """- получить объект по полям страны и город, после обновления """
+    db_execute = db.execute(select(CapitalCity).where(
+        CapitalCity.city == schema_update.city,
+        CapitalCity.country == schema_update.country
+    ))
+    return db_execute.scalars().first()
 
 
