@@ -46,7 +46,7 @@ class BaseGRUDRepository(AbstractRepository):
 
     model = None
 
-    def __init__(self, db: AsyncSession = Depends(get_async_db)):
+    def __init__(self, db: AsyncSession = Depends()):
         self.db = db
 
     async def get_all(self, skip: int = 0, limit: int = 100) -> Sequence[Any]:
