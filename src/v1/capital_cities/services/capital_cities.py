@@ -13,19 +13,24 @@ from starlette import status
 
 from src.core.database import Base, get_async_db
 from src.v1.capital_cities.models import CapitalCity
+from src.v1.capital_cities.reposituries.grud import CapitalCitiesGRUDRepository
 from src.v1.capital_cities.schemas import GetGeoJSONFeatureCollection, Create, Update, GetGeoJSONFeature
 
 
 class CapitalCityService:
     """- сервисы (GRUD операции) столицы городов """
 
-    def __init__(self, db: AsyncSession = Depends(get_async_db)):
-        self.db = db
+    # def __init__(self, db: AsyncSession = Depends(get_async_db)):
+    #     self.db = db
+    def __init__(self, grud: CapitalCitiesGRUDRepository = Depends()):
+        self.grud = grud
 
     async def get_all(self, skip: int = 0, limit: int = 100) -> GetGeoJSONFeatureCollection:
         """- получить список пользователей """
-        instance = await self.db.execute(select(CapitalCity).offset(skip).limit(limit))
-        features = [await self.get_geojson_feature(obj) for obj in instance.scalars().all()]
+        # instance = await self.db.execute(select(CapitalCity).offset(skip).limit(limit))
+        list_instance = await self.grud.get_all(skip, limit)
+        # features = [await self.get_geojson_feature(obj) for obj in list_instance.scalars().all()]
+        features = [await self.get_geojson_feature(obj) for obj in list_instance]
         return GetGeoJSONFeatureCollection(type="FeatureCollection", features=features)
 
     async def get_one(self, pk: int) -> GetGeoJSONFeatureCollection:

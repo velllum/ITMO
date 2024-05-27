@@ -2,7 +2,6 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from sqlalchemy import delete
 
 from src.core.configs import settings
 from src.core.database import db_manager
@@ -17,7 +16,7 @@ async def lifespan(app: FastAPI):
     """- События продолжительности жизни """
     await start_database()
     await add_test_data_table()
-    await register_routers(app)
+    await start_routers(app)
 
     yield
 

@@ -28,4 +28,3 @@ class GetGeoJSONFeatureCollection(FeatureCollection):
     features: list[GetGeoJSONFeature]
 
 
-

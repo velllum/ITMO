@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from sqlalchemy import select
-from typing import Type, Optional, Sequence, Any
+from typing import Type, Sequence, Any
 
 from asyncpg import UniqueViolationError
 from fastapi import Depends, HTTPException
@@ -14,35 +14,35 @@ from src.v1.capital_cities.schemas import Create, Update
 from src.v1.capital_cities.utils import get_point_shape
 
 
-class AbstractGRUDRepository(ABC):
+class AbstractRepository(ABC):
 
     @abstractmethod
-    async def get_all(self, skip: int, limit: int) -> None:
-        """- получить список пользователей """
+    async def get_all(self, *args, **kwargs) -> None:
+        """- получить список """
         raise NotImplementedError
 
     @abstractmethod
-    async def get_one(self, pk: int) -> None:
-        """- получить по pk """
+    async def get_one(self, *args, **kwargs) -> None:
+        """- получить экземпляр """
         raise NotImplementedError
 
     @abstractmethod
-    async def create(self, data: Create) -> None:
+    async def create(self, *args, **kwargs) -> None:
         """- создать """
         raise NotImplementedError
 
     @abstractmethod
-    async def update(self, pk: int, data: Update) -> None:
+    async def update(self, *args, **kwargs) -> None:
         """- обновить """
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, pk: int) -> None:
+    async def delete(self, *args, **kwargs) -> None:
         """- удалить """
         raise NotImplementedError
 
 
-class BaseGRUDRepository(AbstractGRUDRepository):
+class BaseGRUDRepository(AbstractRepository):
 
     model = None
 
@@ -50,7 +50,7 @@ class BaseGRUDRepository(AbstractGRUDRepository):
         self.db = db
 
     async def get_all(self, skip: int = 0, limit: int = 100) -> Sequence[Any]:
-        """- получить список пользователей """
+        """- получить список """
         instance = await self.db.execute(select(self.model).offset(skip).limit(limit))
         return instance.scalars().all()
 
@@ -61,7 +61,7 @@ class BaseGRUDRepository(AbstractGRUDRepository):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='ID НЕ НАЙДЕН')
         return instance
 
-    async def create(self, data: Create) -> Optional[Type[Any], None]:
+    async def create(self, data: Create) -> Type[Any]:
         """- создать """
         try:
             obj = self.model(country=data.country, city=data.city, geom=await get_point_shape(data))
@@ -92,7 +92,7 @@ class BaseGRUDRepository(AbstractGRUDRepository):
         await self.db.commit()
 
 
-class CapitalCitiesRepository(BaseGRUDRepository):
+class CapitalCitiesGRUDRepository(BaseGRUDRepository):
     model = CapitalCity
 
 

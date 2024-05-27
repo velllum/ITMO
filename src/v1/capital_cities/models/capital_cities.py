@@ -2,10 +2,10 @@ import sqlalchemy as sa
 from geoalchemy2 import Geometry
 from sqlalchemy.sql import func
 
-from src.core import database
+from src.core.database import Base
 
 
-class CapitalCity(database.Base):
+class CapitalCity(Base):
     """- модель столицы городов """
 
     __tablename__ = "capital_cities"
