@@ -2,7 +2,7 @@ import sqlalchemy as sa
 from geoalchemy2 import Geometry
 from sqlalchemy.sql import func
 
-from ..core import database
+from src.core import database
 
 
 class CapitalCity(database.Base):

@@ -5,9 +5,11 @@ from fastapi import FastAPI
 from sqlalchemy import select
 from starlette.testclient import TestClient
 
-from src import routers as router, schemas as schema, create_app, settings
-from src.models import CapitalCity
-from . import database
+from src.core.configs import settings
+from src.v1 import API_PREFIX, create_app
+from src.v1.capital_cities.models import CapitalCity
+from src.v1.capital_cities.schemas import Create, Update
+from tests.database import get_session
 
 
 @pytest.fixture
@@ -33,13 +35,13 @@ def client(app) -> TestClient:
 @pytest.fixture
 def prefix() -> str:
     """- получить префикс ссылки """
-    return f"{router.API_PREFIX}/capital-cities"
+    return f"{API_PREFIX}/capital-cities"
 
 
 @pytest.fixture
 def db():
     """- получить синхронную сессию подключения к БД """
-    session = database.get_session()
+    session = get_session()
     yield session
     session.close()
 
@@ -80,13 +82,13 @@ def dct_update_data(dct_create_data) -> dict:
 
 
 @pytest.fixture
-def schema_create(dct_create_data: dict) -> schema.Create:
-    return schema.Create(**dct_create_data)
+def schema_create(dct_create_data: dict) -> Create:
+    return Create(**dct_create_data)
 
 
 @pytest.fixture
-def schema_update(dct_update_data: dict) -> schema.Update:
-    return schema.Update(**dct_update_data)
+def schema_update(dct_update_data: dict) -> Update:
+    return Update(**dct_update_data)
 
 
 @pytest.fixture
