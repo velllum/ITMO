@@ -46,7 +46,8 @@ class BaseGRUDRepository(AbstractRepository):
 
     model = None
 
-    def __init__(self, db: AsyncSession = Depends()):
+    # def __init__(self, db: AsyncSession = Depends(get_async_db)):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
     async def get_all(self, skip: int = 0, limit: int = 100) -> Sequence[Any]:
@@ -92,7 +93,8 @@ class BaseGRUDRepository(AbstractRepository):
         await self.db.commit()
 
 
-class CapitalCitiesGRUDRepository(BaseGRUDRepository):
+class CapitalCityGRUDRepository(BaseGRUDRepository):
     model = CapitalCity
+
 
 

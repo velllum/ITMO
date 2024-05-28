@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 from starlette import status
 from starlette.responses import Response
@@ -7,13 +9,13 @@ from src.v1.capital_cities.schemas import GetGeoJSONFeatureCollection, Update, C
 from src.v1.capital_cities.services import CapitalCityService
 
 router = APIRouter(prefix='/capital-cities', tags=['capital_cities'])
+capital_city_service = Annotated[CapitalCityService, Depends(get_capital_city_service)]
 
 
 @router.get('/', response_model=GetGeoJSONFeatureCollection)
-async def get_all(skip: int = 0, limit: int = 100, service: CapitalCityService = Depends(get_capital_city_service)) -> GetGeoJSONFeatureCollection:
+async def get_all(service: capital_city_service, skip: int = 0, limit: int = 100) -> GetGeoJSONFeatureCollection:
     """- получить список """
     return await service.get_all(skip=skip, limit=limit)
-
 
 # @router.get('/{pk}', response_model=GetGeoJSONFeatureCollection)
 # async def get_by_pk(pk: int, serv: CapitalCityService = Depends()) -> GetGeoJSONFeatureCollection:

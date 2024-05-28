@@ -13,7 +13,7 @@ from starlette import status
 
 from src.core.database import Base, get_async_db
 from src.v1.capital_cities.models import CapitalCity
-from src.v1.capital_cities.reposituries.grud import CapitalCitiesGRUDRepository, AbstractRepository
+from src.v1.capital_cities.reposituries.grud import CapitalCityGRUDRepository
 from src.v1.capital_cities.schemas import GetGeoJSONFeatureCollection, Create, Update, GetGeoJSONFeature
 
 
@@ -22,8 +22,8 @@ class CapitalCityService:
 
     # def __init__(self, db: AsyncSession = Depends(get_async_db)):
     #     self.db = db
-    def __init__(self, grud: AbstractRepository):
-        self.grud: AbstractRepository = grud(get_async_db)
+    def __init__(self, grud: CapitalCityGRUDRepository):
+        self.grud = grud
 
     async def get_all(self, skip: int = 0, limit: int = 100) -> GetGeoJSONFeatureCollection:
         """- получить список пользователей """
