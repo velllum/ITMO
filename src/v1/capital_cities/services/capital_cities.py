@@ -5,6 +5,7 @@ import geojson_pydantic
 
 from src.v1.capital_cities.reposituries.grud import CapitalCityGRUDRepository
 from src.v1.capital_cities.schemas import GetGeoJSONFeatureCollection, Create, Update, GetGeoJSONFeature
+from src.v1.capital_cities.schemas.capital_cities import GetFeatureProperties
 
 
 class CapitalCityService:
@@ -47,9 +48,11 @@ class CapitalCityService:
         geom = to_shape(obj.geom)
 
         return GetGeoJSONFeature(
-            # type="Feature",
+            type="Feature",
             geometry=geojson_pydantic.Point(coordinates=[geom.x, geom.y], type=geom.geom_type),
-            properties={"id": obj.id, "country": obj.country, "city": obj.city,
-                        "created_date": obj.created_date, "updated_date": obj.updated_date}
+            # properties={"id": obj.id, "country": obj.country, "city": obj.city,
+            #             "created_date": obj.created_date, "updated_date": obj.updated_date}
+            properties=GetFeatureProperties.model_dump(obj)
+
         )
 
