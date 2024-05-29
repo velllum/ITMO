@@ -21,8 +21,10 @@ class Delete(Base):
     ...
 
 
-class GetFeatureProperties(Base):
+class FeatureProperties(BaseModel):
     id: int
+    country: str
+    city: str
     created_date: datetime
     updated_date: datetime
 
@@ -30,14 +32,12 @@ class GetFeatureProperties(Base):
         response_model = True
 
 
-class GetGeoJSONFeature(Feature):
+class GeoJSONFeature(Feature):
     geometry: Point
-    properties: GetFeatureProperties
+    properties: FeatureProperties
 
 
-
-
-class GetGeoJSONFeatureCollection(FeatureCollection):
-    features: list[GetGeoJSONFeature]
+class GeoJSONFeatureCollection(FeatureCollection):
+    features: list[GeoJSONFeature]
 
 
