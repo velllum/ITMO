@@ -11,3 +11,4 @@ async_db = Depends(get_async_db)
 async def get_capital_city_service(db: AsyncSession = async_db) -> CapitalCityService:
     return CapitalCityService(CapitalCityGRUDRepository(db))
 
+

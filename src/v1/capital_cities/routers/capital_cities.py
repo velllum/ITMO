@@ -17,26 +17,29 @@ async def get_all(service: capital_city_service, skip: int = 0, limit: int = 100
     """- получить список """
     return await service.get_all(skip=skip, limit=limit)
 
-# @router.get('/{pk}', response_model=GetGeoJSONFeatureCollection)
-# async def get_by_pk(pk: int, serv: CapitalCityService = Depends()) -> GetGeoJSONFeatureCollection:
-#     """- получить по pk """
-#     return await serv.get_one(pk)
+
+@router.get('/{pk}', response_model=GetGeoJSONFeatureCollection)
+async def get_by_pk(service: capital_city_service, pk: int) -> GetGeoJSONFeatureCollection:
+    """- получить по pk """
+    return await service.get_one(pk)
 
 
-# @router.post('/create', response_model=GetGeoJSONFeatureCollection)
-# async def create(data: Create, serv: CapitalCityService = Depends()) -> GetGeoJSONFeatureCollection:
-#     """- создать """
-#     return await serv.create(data)
-#
-#
-# @router.put('/{pk}', response_model=GetGeoJSONFeatureCollection)
-# async def update(pk: int, data: Update, serv: CapitalCityService = Depends()) -> GetGeoJSONFeatureCollection:
-#     """- обновить """
-#     return await serv.update(pk, data)
-#
-#
-# @router.delete('/{pk}', status_code=status.HTTP_200_OK)
-# async def delete(pk: int, serv: CapitalCityService = Depends()) -> Response:
-#     """- удалить """
-#     await serv.delete(pk)
-#     return Response(status_code=status.HTTP_200_OK, content='{"detail": "ДАННЫЕ УДАЛЕНЫ"}')
+@router.post('/create', response_model=GetGeoJSONFeatureCollection)
+async def create(service: capital_city_service, data: Create) -> GetGeoJSONFeatureCollection:
+    """- создать """
+    return await service.create(data)
+
+
+@router.put('/{pk}', response_model=GetGeoJSONFeatureCollection)
+async def update(service: capital_city_service, pk: int, data: Update) -> GetGeoJSONFeatureCollection:
+    """- обновить """
+    return await service.update(pk, data)
+
+
+@router.delete('/{pk}', status_code=status.HTTP_200_OK)
+async def delete(service: capital_city_service, pk: int) -> Response:
+    """- удалить """
+    await service.delete(pk)
+    return Response(status_code=status.HTTP_200_OK, content='{"detail": "ДАННЫЕ УДАЛЕНЫ"}')
+
+

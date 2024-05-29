@@ -8,7 +8,6 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from src.core.database import get_async_db
 from src.v1.capital_cities.models import CapitalCity
 from src.v1.capital_cities.schemas import Create, Update
 from src.v1.capital_cities.utils import get_point_shape
@@ -46,7 +45,6 @@ class BaseGRUDRepository(AbstractRepository):
 
     model = None
 
-    # def __init__(self, db: AsyncSession = Depends(get_async_db)):
     def __init__(self, db: AsyncSession):
         self.db = db
 
