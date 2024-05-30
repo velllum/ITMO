@@ -1,55 +1,44 @@
 from typing import Any
 
-from geoalchemy2.shape import to_shape
-from geojson_pydantic import Point
-
 from src.v1.capital_cities.reposituries.grud import CapitalCityGRUDRepository
-from src.v1.capital_cities.schemas import GeoJSONFeatureCollection, Create, Update, GeoJSONFeature
-from src.v1.capital_cities.schemas.capital_cities import FeatureProperties
+from src.v1.capital_cities.schemas.capital_cities import FeatureCollection
 
 
 class CapitalCityService:
     """- сервисы (GRUD операции) столицы городов """
 
     def __init__(self, grud: CapitalCityGRUDRepository):
+        self.features = []
         self.grud = grud
 
-    async def get_all(self, skip: int = 0, limit: int = 100) -> GeoJSONFeatureCollection:
+    async def get_all(self, skip: int = 0, limit: int = 100) -> dict[str, str | list[Any]]:
         """- получить список пользователей """
         list_instance = await self.grud.get_all(skip, limit)
-        features = [await self.get_geojson_feature(obj) for obj in list_instance]
-        return GeoJSONFeatureCollection(type="FeatureCollection", features=features)
+        self.features = [await instance.feature() for instance in list_instance]
+        return await self.__feature_collection()
 
-    async def get_one(self, pk: int) -> GeoJSONFeatureCollection:
+    async def get_one(self, pk: int):
         """- получить по pk """
-        instance = await self.grud.get_one(pk)
-        feature = await self.get_geojson_feature(instance)
-        return GeoJSONFeatureCollection(type="FeatureCollection", features=[feature])
+        self.features = await self.grud.get_one(pk)
+        return await self.__feature_collection()
 
-    async def create(self, data: Create) -> GeoJSONFeatureCollection:
+    async def create(self, data: FeatureCollection) -> dict[str, str | list[Any]]:
         """- создать """
-        instance = self.grud.create(data)
-        feature = await self.get_geojson_feature(instance)
-        return GeoJSONFeatureCollection(type="FeatureCollection", features=[feature])
+        print(data)
+        self.features = self.grud.create(data)
+        return await self.__feature_collection()
 
-    async def update(self, pk: int, data: Update) -> GeoJSONFeatureCollection:
+    async def update(self, pk: int, data: FeatureCollection) -> dict[str, str | list[Any]]:
         """- обновить """
-        instance = await self.grud.update(pk, data)
-        feature = await self.get_geojson_feature(instance)
-        return GeoJSONFeatureCollection(type="FeatureCollection", features=[feature])
+        self.features = await self.grud.update(pk, data)
+        return await self.__feature_collection()
 
     async def delete(self, pk: int):
         """- удалить """
         await self.grud.delete(pk)
 
-    @staticmethod
-    async def get_geojson_feature(instance: Any) -> GeoJSONFeature:
-        """- получить geojson """
-        geom = to_shape(instance.geom)
+    async def __feature_collection(self) -> dict[str, str | list[Any]]:
+        """- получить коллекцию в стиле GEOJSON """
+        return {"type": "FeatureCollection", "features": self.features}
 
-        return GeoJSONFeature(
-            type="Feature",
-            geometry=Point(coordinates=[geom.x, geom.y], type=geom.geom_type),
-            properties=FeatureProperties(**instance.__dict__)
-        )
 

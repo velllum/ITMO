@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from geojson_pydantic import Feature, FeatureCollection, Point
+from geojson_pydantic import Feature as BaseFeature, FeatureCollection as BaseFeatureCollection, Point
 from pydantic import BaseModel
 
 
@@ -8,36 +8,54 @@ class Base(BaseModel):
     country: str
     city: str
 
+    class Config:
+        response_model = True
+
 
 class Create(Base):
-    geom: FeatureCollection
+    ...
 
 
 class Update(Base):
-    geom: FeatureCollection
+    ...
 
 
 class Delete(Base):
     ...
 
 
-class FeatureProperties(BaseModel):
+# =============================
+
+
+class GetFeatureProperties(Base):
     id: int
-    country: str
-    city: str
     created_date: datetime
     updated_date: datetime
 
-    class config:
-        response_model = True
+
+class GetFeature(BaseFeature):
+    geometry: Point
+    properties: GetFeatureProperties
 
 
-class GeoJSONFeature(Feature):
+class GetFeatureCollection(BaseFeatureCollection):
+    features: list[GetFeature]
+
+
+# ==============================
+
+
+class FeatureProperties(Base):
+    ...
+
+
+class Feature(BaseFeature):
     geometry: Point
     properties: FeatureProperties
 
 
-class GeoJSONFeatureCollection(FeatureCollection):
-    features: list[GeoJSONFeature]
+class FeatureCollection(BaseFeatureCollection):
+    features: list[Feature]
 
-
+    class Config:
+        response_model = True
