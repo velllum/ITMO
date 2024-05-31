@@ -9,15 +9,7 @@ class Base(BaseModel):
     city: str
 
     class Config:
-        response_model = True
-
-
-class Create(Base):
-    ...
-
-
-class Update(Base):
-    ...
+        from_attributes = True
 
 
 class Delete(Base):
@@ -32,10 +24,16 @@ class GetFeatureProperties(Base):
     created_date: datetime
     updated_date: datetime
 
+    class Config:
+        from_attributes = True
+
 
 class GetFeature(BaseFeature):
     geometry: Point
     properties: GetFeatureProperties
+
+    class Config:
+        from_attributes = True
 
 
 class GetFeatureCollection(BaseFeatureCollection):
@@ -57,5 +55,4 @@ class Feature(BaseFeature):
 class FeatureCollection(BaseFeatureCollection):
     features: list[Feature]
 
-    class Config:
-        response_model = True
+

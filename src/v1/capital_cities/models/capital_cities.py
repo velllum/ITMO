@@ -1,6 +1,7 @@
+import shapely
 import sqlalchemy as sa
 from geoalchemy2 import Geometry
-from geoalchemy2.shape import to_shape
+from geoalchemy2.shape import to_shape, from_shape
 from sqlalchemy.sql import func
 
 from src.core.database import Base
@@ -40,4 +41,24 @@ class CapitalCity(Base):
                 "updated_date":  self.updated_date
             }
         }
+
+    @staticmethod
+    async def create(data):
+        """- создать новый объект """
+        features = data.features[0]
+        instance = CapitalCity(
+            country=features.properties.country,
+            city=features.properties.city,
+            geom=from_shape(shapely.Point(features.geometry.coordinates))
+        )
+        return instance
+
+    @staticmethod
+    async def update(instance, data):
+        """- создать новый объект """
+        features = data.features[0]
+        instance.country = features.properties.country
+        instance.city = features.properties.city
+        instance.geom = from_shape(shapely.Point(features.geometry.coordinates))
+        return instance
 

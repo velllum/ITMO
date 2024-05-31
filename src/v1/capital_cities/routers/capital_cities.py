@@ -1,4 +1,3 @@
-from pprint import pprint
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -6,8 +5,7 @@ from starlette import status
 from starlette.responses import Response
 
 from src.v1.capital_cities.dependens.capital_city_service import get_capital_city_service
-from src.v1.capital_cities.schemas import GetFeatureCollection, Update, Create
-from src.v1.capital_cities.schemas.capital_cities import FeatureCollection
+from src.v1.capital_cities.schemas.capital_cities import FeatureCollection, GetFeatureCollection
 from src.v1.capital_cities.services import CapitalCityService
 
 router = APIRouter(prefix='/capital-cities', tags=['capital_cities'])
@@ -26,14 +24,13 @@ async def get_by_pk(service: capital_city_service, pk: int):
     return await service.get_one(pk)
 
 
-@router.post('/create', response_model=FeatureCollection)
+@router.post('/create', response_model=GetFeatureCollection)
 async def create(service: capital_city_service, data: FeatureCollection):
     """- создать """
-    pprint(data.model_dump())
     return await service.create(data)
 
 
-@router.put('/{pk}', response_model=FeatureCollection)
+@router.put('/{pk}', response_model=GetFeatureCollection)
 async def update(service: capital_city_service, pk: int, data: FeatureCollection):
     """- обновить """
     return await service.update(pk, data)

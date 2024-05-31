@@ -1,9 +1,5 @@
 from abc import ABC, abstractmethod
-from pprint import pprint
 
-import shapely
-from geoalchemy2 import WKBElement
-from geoalchemy2.shape import from_shape
 from sqlalchemy import select
 from typing import Type, Sequence, Any
 
@@ -13,7 +9,6 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from src.core.database import Base
 from src.v1.capital_cities.models import CapitalCity
 from src.v1.capital_cities.schemas.capital_cities import FeatureCollection
 
@@ -47,7 +42,6 @@ class AbstractRepository(ABC):
 
 
 class BaseGRUDRepository(AbstractRepository):
-
     model = None
 
     def __init__(self, db: AsyncSession):
@@ -65,26 +59,21 @@ class BaseGRUDRepository(AbstractRepository):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='ID НЕ НАЙДЕН')
         return instance
 
-    async def create(self, data: FeatureCollection):
+    async def create(self, data: FeatureCollection) -> Type[Any]:
         """- создать """
-        pprint(data)
-
         try:
-            obj = self.model(country=data.country, city=data.city, geom=await self.get_point_shape(data))
-            self.db.add(obj)
+            instance = await self.model.create(data)
+            self.db.add(instance)
             await self.db.commit()
-            await self.db.refresh(obj)
-            return obj
+            await self.db.refresh(instance)
+            return instance
         except IntegrityError or UniqueViolationError:
             raise HTTPException(status_code=status.HTTP_200_OK, detail='СТРАНА И ГОРОД УЖЕ СУЩЕСТВУЮТ')
 
     async def update(self, pk: int, data: FeatureCollection) -> Type[Any]:
         """- обновить """
-        instance = await self.get_one(pk)
         try:
-            instance.country = data.country
-            instance.city = data.city
-            instance.geom = await self.get_point_shape(data)
+            instance = await self.model.update(await self.get_one(pk), data)
             await self.db.commit()
             await self.db.refresh(instance)
             return instance
@@ -97,16 +86,6 @@ class BaseGRUDRepository(AbstractRepository):
         await self.db.delete(instance)
         await self.db.commit()
 
-    @staticmethod
-    async def get_point_shape(data) -> WKBElement:
-        """- получить распарсенные данные в виде геоданных """
-        geojson_feature = data.geom.features[0]
-        coordinates = geojson_feature.geometry.coordinates
-        return from_shape(shapely.Point(coordinates))
-
 
 class CapitalCityGRUDRepository(BaseGRUDRepository):
     model = CapitalCity
-
-
-

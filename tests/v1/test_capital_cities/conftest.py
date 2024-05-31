@@ -8,19 +8,18 @@ from starlette.testclient import TestClient
 from src.core.configs import settings
 from src.v1 import API_PREFIX, create_app
 from src.v1.capital_cities.models import CapitalCity
-from src.v1.capital_cities.schemas import Create, Update
 from tests.database import get_session
+
+
+def pytest_configure(config):
+    """- регистрация кастомных отметок """
+    config.addinivalue_line("markers", "itmo_capital_cities: Группа тестов приложения основных городов стран")
 
 
 @pytest.fixture
 def app() -> FastAPI:
     """- получить объект приложения """
     return create_app()
-
-
-def pytest_configure(config):
-    """- регистрация кастомных отметок """
-    config.addinivalue_line("markers", "itmo_capital_cities: Группа тестов приложения основных городов стран")
 
 
 @pytest.fixture
