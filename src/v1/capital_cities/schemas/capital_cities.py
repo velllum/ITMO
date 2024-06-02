@@ -1,15 +1,14 @@
 from datetime import datetime
 
 from geojson_pydantic import Feature as BaseFeature, FeatureCollection as BaseFeatureCollection, Point
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class Base(BaseModel):
     country: str
     city: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes = True)
 
 
 class Delete(Base):
@@ -24,16 +23,10 @@ class GetFeatureProperties(Base):
     created_date: datetime
     updated_date: datetime
 
-    class Config:
-        from_attributes = True
-
 
 class GetFeature(BaseFeature):
     geometry: Point
     properties: GetFeatureProperties
-
-    class Config:
-        from_attributes = True
 
 
 class GetFeatureCollection(BaseFeatureCollection):

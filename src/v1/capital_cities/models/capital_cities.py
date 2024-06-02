@@ -25,7 +25,7 @@ class CapitalCity(Base):
         return f"CapitalCity(id={self.id!r}, country={self.country!r}, city={self.city!r}, geom={self.geom!r})"
 
     async def feature(self) -> dict:
-        """- получить словарь в стиле GEOJSON """
+        """- получить словарь в feature GEOJSON """
         geom = to_shape(self.geom)
         return {
             "type": "Feature",
