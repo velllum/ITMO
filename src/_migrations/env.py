@@ -6,8 +6,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.core import database
 from src.core.configs import settings
+from src.core.database import Base
+from src.v1.capital_cities.models import CapitalCity
 
 config = context.config
 
@@ -16,7 +17,7 @@ if config.config_file_name is not None:
 
 config.set_main_option('sqlalchemy.url', settings.DATABASE_URL_ASYNCPG + '?async_fallback=True')
 
-target_metadata = database.Base.metadata
+target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:

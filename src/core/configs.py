@@ -28,10 +28,10 @@ class Settings(BaseSettings):
         return f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     # с локальной машины
-    model_config = SettingsConfigDict(env_file='./docker/env/dev/.env')
+    # model_config = SettingsConfigDict(env_file='./docker/env/dev/.env')
 
     # docker
-    # model_config = SettingsConfigDict(env_file='./docker/env/prod/.env.web')
+    model_config = SettingsConfigDict(env_file='./docker/env/prod/.env.web')
 
 
 settings = Settings()

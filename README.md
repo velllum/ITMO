@@ -31,24 +31,23 @@
 Формат тела для обновления, добавления:
 
 ```{
-  "country": "<Страна>",
-  "city": "<Город>",
-  "geom": { // geojson
-      "type": "FeatureCollection",
-      "features": [
+"type": "FeatureCollection",
+"features": [
         {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "coordinates": [
-              37.19468932272076,
-              55.99746473459453
-            ],
-            "type": "Point"
-          }
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    71.43075337936759,
+                    51.128427723406304
+                ],
+            },
+            "properties": {
+                "country": "Казахстан",
+                "city": "Астана"
+            }
         }
-      ]
-    }
+    ]
 }
 ```
 
