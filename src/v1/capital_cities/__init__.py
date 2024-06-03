@@ -15,3 +15,4 @@ def create_app() -> FastAPI:
     register_middleware(app)
     return app
 
+

@@ -7,10 +7,10 @@ from sqlalchemy import select
 from starlette.testclient import TestClient
 
 from src.core.configs import settings
+from src.core.database import get_session
 from src.v1 import API_PREFIX, create_app
 from src.v1.capital_cities.models import CapitalCity
 from src.v1.capital_cities.schemas.capital_cities import FeatureCollection, FeatureProperties
-from tests.database import get_session
 
 
 @pytest.fixture

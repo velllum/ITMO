@@ -89,3 +89,5 @@ class BaseGRUDRepository(AbstractRepository):
 
 class CapitalCityGRUDRepository(BaseGRUDRepository):
     model = CapitalCity
+
+
