@@ -26,6 +26,12 @@
 Не забываем установить библиотеки
 `pip install -r requirements.txt`
 
+Запуск миграций через Alembic
+
+`alembic revision --autogenerate` - создать миграци автоматически
+
+`alembic upgrade head` - запустить миграцию для обновления базы
+
 ### API
 
 Формат тела для обновления, добавления:

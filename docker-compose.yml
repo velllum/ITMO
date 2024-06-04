@@ -28,7 +28,7 @@ services:
       - ./:/app
     depends_on:
       - postgres
-    command: sh -c "./src/v1/alembic upgrade head && python -m src.v1.capital_cities.main"
+    command: sh -c "alembic upgrade head && python -m src.v1.capital_cities.main"
 
   nginx:
     container_name: itmo_nginx
@@ -43,3 +43,4 @@ services:
       - web
     depends_on:
       - web
+

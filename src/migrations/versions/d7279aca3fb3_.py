@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 37109d17f173
+Revision ID: d7279aca3fb3
 Revises: 
-Create Date: 2024-05-19 18:18:18.926297
+Create Date: 2024-06-04 10:18:54.697472
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from geoalchemy2 import Geometry
 
 # revision identifiers, used by Alembic.
-revision: str = '37109d17f173'
+revision: str = 'd7279aca3fb3'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
