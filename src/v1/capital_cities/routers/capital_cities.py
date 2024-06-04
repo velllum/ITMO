@@ -42,4 +42,3 @@ async def delete(service: capital_city_service, pk: int) -> Response:
     await service.delete(pk)
     return Response(status_code=status.HTTP_200_OK, content='{"detail": "ДАННЫЕ УДАЛЕНЫ"}')
 
-

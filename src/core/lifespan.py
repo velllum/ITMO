@@ -57,4 +57,3 @@ async def close_database():
     await db_manager.close()
     logger.info("БАЗА ДАННЫХ ЗАКРЫТА")
 
-
