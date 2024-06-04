@@ -8,3 +8,4 @@ async def register_routers(app: FastAPI) -> FastAPI:
     """- инициализация роутов """
     app.include_router(router=router_capital_cities, prefix=v1.API_PREFIX)
     return app
+

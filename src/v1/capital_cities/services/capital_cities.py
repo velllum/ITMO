@@ -1,6 +1,6 @@
 from typing import Any
 
-from src.v1.capital_cities.reposituries.grud import CapitalCityGRUDRepository
+from src.v1.capital_cities.repositories.grud import CapitalCityGRUDRepository
 from src.v1.capital_cities.schemas.capital_cities import FeatureCollection
 
 feature_collection = dict[str, str | list[Any]]
