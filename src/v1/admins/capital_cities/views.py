@@ -1,4 +1,5 @@
 from sqladmin import ModelView, Admin
+from wtforms.fields import simple
 
 from src.v1.capital_cities.models import CapitalCity
 
@@ -34,15 +35,33 @@ class CapitalCityAdmin(ModelView, model=CapitalCity):
     column_labels = {CapitalCity.city: "Города", CapitalCity.country: "Страна",
                      CapitalCity.updated_date: "Дата обновления", CapitalCity.created_date: "Дата создания",
                      "longitude": "Долгота", "latitude": "Широта",}
-    @classmethod
-    def date_format(cls):
-        return cls.strftime("%d.%m.%Y")
 
-    column_type_formatters = dict(ModelView.column_type_formatters, created_date=date_format)
+    # @classmethod
+    # def date_format(cls):
+    #     return cls.strftime("%d.%m.%Y")
+    #
+    # column_type_formatters = dict(ModelView.column_type_formatters, created_date=date_format)
+    # form_converter =
+    # save_as = True
 
-    save_as = True
+    # form_overrides = dict(country=simple.TextAreaField)
+    # form_args = dict(city=dict(label="sdfsdfsdfsdfsd"))
+    form_widget_args = dict(city=dict(readonly=True))
+
+    form_ajax_refs = {
+        'longitude': {
+            'fields': ('geom', 'zip_code'),
+        }
+    }
+
+    def edit_form_query(self, request):
+        edite_form = super().edit_form_query(request)
+        print(type(edite_form))
+        return edite_form
+
 
 async def register_views(app_admin: Admin) -> Admin:
     """- инициализация роутов """
     app_admin.add_view(CapitalCityAdmin)
     return app_admin
+

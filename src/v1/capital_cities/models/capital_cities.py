@@ -26,7 +26,6 @@ class CapitalCity(Base):
 
     async def feature(self) -> dict:
         """- получить словарь в feature GEOJSON """
-        # geom = self.shape_geom
         return {
             "type": "Feature",
             "geometry": {
@@ -38,7 +37,7 @@ class CapitalCity(Base):
                 "country": self.country,
                 "city": self.city,
                 "created_date": self.created_date,
-                "updated_date":  self.updated_date
+                "updated_date": self.updated_date
             }
         }
 
