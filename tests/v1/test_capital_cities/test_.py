@@ -23,7 +23,6 @@ def test_create_data(client, prefix, dct_create_data, coordinates_create, proper
     assert response_properties['city'] == properties_create.city
 
 
-
 def test_check_create_is_duplicated(client, prefix, dct_create_data):
     """- проверить проверка дублирование данных при повторном создании """
     response = client.post(url=f"{prefix}/create", json=dct_create_data)

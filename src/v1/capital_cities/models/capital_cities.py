@@ -26,12 +26,12 @@ class CapitalCity(Base):
 
     async def feature(self) -> dict:
         """- получить словарь в feature GEOJSON """
-        geom = to_shape(self.geom)
+        # geom = self.shape_geom
         return {
             "type": "Feature",
             "geometry": {
-                "type": geom.geom_type,
-                "coordinates": [geom.x, geom.y]
+                "type": self.geom_type,
+                "coordinates": [self.longitude, self.latitude]
             },
             "properties": {
                 "id": self.id,
@@ -41,6 +41,26 @@ class CapitalCity(Base):
                 "updated_date":  self.updated_date
             }
         }
+
+    @property
+    def longitude(self):
+        """- получить долготу """
+        return self.shape_geom.x
+
+    @property
+    def latitude(self):
+        """- получить широту """
+        return self.shape_geom.y
+
+    @property
+    def geom_type(self):
+        """- получить гео тип  """
+        return self.shape_geom.geom_type
+
+    @property
+    def shape_geom(self):
+        """- получить объект геоданных """
+        return to_shape(self.geom)
 
     @staticmethod
     async def create(data):

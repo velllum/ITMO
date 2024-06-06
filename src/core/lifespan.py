@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from src.core.configs import settings
 from src.core.database import db_manager
 from src.core.routers import register_routers
+from src.v1.admins import create_admin
 from src.v1.capital_cities.models import CapitalCity
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,7 @@ async def lifespan(app: FastAPI):
     await start_database()
     await add_test_data_table()
     await start_routers(app)
+    await start_admin(app)
 
     yield
 
@@ -33,6 +35,12 @@ async def start_routers(app: FastAPI):
     """- старт инициализации роутеров """
     await register_routers(app)
     logger.info("РЕГИСТРАЦИЯ РОУТОВ")
+
+
+async def start_admin(app: FastAPI):
+    """- регистрируем админ-панель """
+    await create_admin(app)
+    logger.info("ЗАПУСК АДМИН ПАНЕЛИ")
 
 
 async def add_test_data_table():
