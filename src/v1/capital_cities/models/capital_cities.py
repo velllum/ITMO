@@ -14,8 +14,8 @@ class CapitalCity(Base):
     __table_args__ = (sa.UniqueConstraint('country', 'city', name='uq_capital_cities_country_city'),)
 
     id = sa.Column(sa.Integer, primary_key=True, index=True)
-    country = sa.Column(sa.String, index=True)
-    city = sa.Column(sa.String, index=True)
+    country = sa.Column(sa.String, index=True, nullable=False)
+    city = sa.Column(sa.String, index=True, nullable=False)
     geom = sa.Column(Geometry('POINT'))
 
     created_date = sa.Column(sa.DateTime, server_default=func.now())
